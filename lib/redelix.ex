@@ -2,34 +2,24 @@ defmodule Redelix do
 
  @derive [Poison.Decoder]
   
+ def getProjectWikis(project_name) do
+    decoded_response=decode_get_response(HTTPotion.get "#{url}/projects/#{project_name}/wiki/index.json", [basic_auth: auth()])
+     return_decoded_response(decoded_response, "wiki_pages")
+ end
+  
  def getIssue(issue_id) do
-    decoded_response=decode_get_issue_response(HTTPotion.get "#{url}/issues/#{issue_id}.json", [basic_auth: auth()])
-    case  decoded_response do
-	{:ok, issue} ->
-	  {:ok, issue["issue"]}
-	_ ->
-	  decoded_response
-       end
+    decoded_response=decode_get_response(HTTPotion.get "#{url}/issues/#{issue_id}.json", [basic_auth: auth()])
+    return_decoded_response(decoded_response, "issue")
 end 
 
 def getIssues() do
-    decoded_response=decode_get_issue_response(HTTPotion.get "#{url}/issues.json", [basic_auth: auth()]  ) 
-    case  decoded_response do
-	{:ok, issues} ->
-	  {:ok, issues["issues"]}
-	_ ->
-	  decoded_response
-  end
+    decoded_response=decode_get_response(HTTPotion.get "#{url}/issues.json", [basic_auth: auth()]  ) 
+    return_decoded_response(decoded_response, "issues")
 end
 
 def getIssues(query_string) do
-    decoded_response=decode_get_issue_response(HTTPotion.get "#{url}/issues.json", [basic_auth: auth(), query: query_string]  ) 
-    case  decoded_response do
-	{:ok, issues} ->
-	  {:ok, issues["issues"]}
-	_ ->
-	  decoded_response
-       end
+    decoded_response=decode_get_response(HTTPotion.get "#{url}/issues.json", [basic_auth: auth(), query: query_string]  ) 
+    return_decoded_response(decoded_response, "issues")
 end
 
 
@@ -41,7 +31,16 @@ end
     {Application.get_env(:redelix, :username) , Application.get_env(:redelix, :password) }
  end
 
- defp decode_get_issue_response(response) do
+defp return_decoded_response(decoded_response, key) do
+    case  decoded_response do
+	{:ok, items} ->
+	  {:ok, items[key]}
+	_ ->
+	  decoded_response
+       end
+end
+
+ defp decode_get_response(response) do
     case response do
 	%HTTPotion.Response{status_code: 200} ->
           Poison.decode(response.body)
@@ -51,3 +50,4 @@ end
  end
  
 end
+
