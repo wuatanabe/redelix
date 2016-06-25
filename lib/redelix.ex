@@ -12,6 +12,16 @@ defmodule Redelix do
        end
 end 
 
+def getIssues() do
+    decoded_response=decode_get_issue_response(HTTPotion.get "#{url}/issues.json", [basic_auth: auth()]  ) 
+    case  decoded_response do
+	{:ok, issues} ->
+	  {:ok, issues["issues"]}
+	_ ->
+	  decoded_response
+  end
+end
+
 def getIssues(query_string) do
     decoded_response=decode_get_issue_response(HTTPotion.get "#{url}/issues.json", [basic_auth: auth(), query: query_string]  ) 
     case  decoded_response do
@@ -30,7 +40,7 @@ end
  def auth() do
     {Application.get_env(:redelix, :username) , Application.get_env(:redelix, :password) }
  end
- 
+
  def decode_get_issue_response(response) do
     case response do
 	%HTTPotion.Response{status_code: 200} ->
