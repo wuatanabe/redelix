@@ -3,7 +3,7 @@ defmodule Redelix do
  @derive [Poison.Decoder]
   
  def getIssue(issue_id) do
-    decoded_response=decode_get_issue_response(HTTPotion.get "#{url}/issues/#{issue_id}.json", auth)
+    decoded_response=decode_get_issue_response(HTTPotion.get "#{url}/issues/#{issue_id}.json", [basic_auth: auth()])
     case  decoded_response do
 	{:ok, issue} ->
 	  {:ok, issue["issue"]}
@@ -12,13 +12,23 @@ defmodule Redelix do
        end
 end 
 
+def getIssues(query_string) do
+    decoded_response=decode_get_issue_response(HTTPotion.get "#{url}/issues.json", [basic_auth: auth(), query: query_string]  ) 
+    case  decoded_response do
+	{:ok, issues} ->
+	  {:ok, issues["issues"]}
+	_ ->
+	  decoded_response
+       end
+end
+
 
  def url() do
     Application.get_env(:redelix, :url)
  end
  
  def auth() do
-    [basic_auth: {Application.get_env(:redelix, :username) , Application.get_env(:redelix, :password) }]
+    {Application.get_env(:redelix, :username) , Application.get_env(:redelix, :password) }
  end
  
  def decode_get_issue_response(response) do

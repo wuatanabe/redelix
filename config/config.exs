@@ -30,6 +30,6 @@ use Mix.Config
 #     import_config "#{Mix.env}.exs"
 
 
-config :redelix, url: "redmine_url"
-config :redelix, username: "username"
-config :redelix, password:  "password"
+config :redelix, url: "demo.redmine.org"
+config :redelix, username: "myaccount"
+config :redelix, password:  "mypassword"
