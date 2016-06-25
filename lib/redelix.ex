@@ -41,7 +41,7 @@ end
     {Application.get_env(:redelix, :username) , Application.get_env(:redelix, :password) }
  end
 
- def decode_get_issue_response(response) do
+ defp decode_get_issue_response(response) do
     case response do
 	%HTTPotion.Response{status_code: 200} ->
           Poison.decode(response.body)
