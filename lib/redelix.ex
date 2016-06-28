@@ -1,11 +1,24 @@
 defmodule Redelix do
 
- @derive [Poison.Decoder]
+ @derive [Poison.Decoder, Poison.Encoder]
   
- def getProjectWikis(project_name) do
-    decoded_response=decode_get_response(HTTPotion.get "#{url}/projects/#{project_name}/wiki/index.json", [basic_auth: auth()])
-     return_decoded_response(decoded_response, "wiki_pages")
+   def getWiki(project_name, wiki_page_name) do
+    decoded_response=decode_get_response(HTTPotion.get "#{url}/projects/#{project_name}/wiki/#{wiki_page_name}.json", [basic_auth: auth()])
+    return_decoded_response(decoded_response, "wiki_page")
  end
+  
+ def getWikis(project_name) do
+    decoded_response=decode_get_response(HTTPotion.get "#{url}/projects/#{project_name}/wiki/index.json", [basic_auth: auth()])
+    return_decoded_response(decoded_response, "wiki_pages")
+ end
+ 
+ 
+ def createIssue(issue) do
+  value = %{"project_id" => 1, "subject" => "Example", "priority_id" => 1, "tracker_id" => 1}
+  content=   Poison.Encoder.encode(value, [])
+  HTTPotion.post("#{url}/issues.json", [body: "issue=#{content}" , basic_auth: auth()])
+ end
+ 
   
  def getIssue(issue_id) do
     decoded_response=decode_get_response(HTTPotion.get "#{url}/issues/#{issue_id}.json", [basic_auth: auth()])
