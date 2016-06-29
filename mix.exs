@@ -15,7 +15,7 @@ defmodule Redelix.Mixfile do
   #
   # Type "mix help compile.app" for more information
   def application do
-    [applications: [:logger, :httpotion, :httpoison]]
+    [applications: [:logger, :httpotion, :httpoison, :cowboy, :plug]]
   end
 
   # Dependencies can be Hex packages:
@@ -28,6 +28,6 @@ defmodule Redelix.Mixfile do
   #
   # Type "mix help deps" for more examples and options
   defp deps do
-    [{:httpotion, "~> 3.0.0"}, {:poison, "~> 2.0"}, {:httpoison, "0.9.0"}]
+    [{:httpotion, "~> 3.0.0"}, {:poison, "~> 2.0"}, {:httpoison, "0.9.0"},{:cowboy, "~> 1.0.0"}, {:plug, "~> 1.0"}]
   end
 end

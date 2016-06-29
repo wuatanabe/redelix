@@ -12,11 +12,11 @@ defmodule Redelix do
     return_decoded_response(decoded_response, "wiki_pages")
  end
  
- 
+ #CREDIT: thanks to Dogbert (http://stackoverflow.com/users/320615/dogbert)
+ #http://stackoverflow.com/questions/38037325/elixir-how-to-post-on-a-rest-api-redmine-with-httpotion
  def createIssue(issue) do
-  value = %{"project_id" => 1, "subject" => "Example", "priority_id" => 1, "tracker_id" => 1}
-  content=   Poison.Encoder.encode(value, [])
-  HTTPotion.post("#{url}/issues.json", [body: "issue=#{content}" , basic_auth: auth()])
+   body = Plug.Conn.Query.encode(issue)
+   HTTPotion.post("#{url}/issues.json", [body: body, basic_auth: auth()])
  end
  
   
