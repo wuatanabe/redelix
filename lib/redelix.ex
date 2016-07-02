@@ -2,7 +2,7 @@ defmodule Redelix do
 
  @derive [Poison.Decoder, Poison.Encoder]
   
-   def getWiki(project_name, wiki_page_name) do
+def getWiki(project_name, wiki_page_name) do
     decoded_response=decode_get_response(HTTPotion.get "#{url}/projects/#{project_name}/wiki/#{wiki_page_name}.json", [basic_auth: auth()])
     return_decoded_response(decoded_response, "wiki_page")
  end
@@ -12,7 +12,18 @@ defmodule Redelix do
     return_decoded_response(decoded_response, "wiki_pages")
  end
   
-  
+def deleteWiki(project_name, wiki_page_name) do
+  HTTPotion.delete!("#{url}/projects/#{project_name}/wiki/#{wiki_page_name}.json", [basic_auth: auth()] )
+end
+
+def updateWiki(project_name, wiki_page_name, wiki_changes) do
+    {ok, content} = Poison.encode(%{wiki_page: Enum.into(wiki_changes, %{})})
+    HTTPotion.put!("#{url}/projects/#{project_name}/wiki/#{wiki_page_name}.json", [body: content, basic_auth: auth(), headers: ["Content-Type": "application/json"]])  
+end
+
+def createWiki(project_name, wiki_page_name, wiki_changes) do
+    updateWiki(project_name, wiki_page_name, wiki_changes)
+end
   
  def getIssue(issue_id) do
     decoded_response=decode_get_response(HTTPotion.get "#{url}/issues/#{issue_id}.json", [basic_auth: auth()])
