@@ -55,6 +55,17 @@ def deleteIssue(issue_id) do
 end
 
 
+def addWatcher(issue_id, user_id) do
+  body = Plug.Conn.Query.encode(%{user_id: user_id}) 
+  HTTPotion.post!("#{url}/issues/#{issue_id}/watchers.json", [body: body, basic_auth: auth()])
+end
+
+def deleteWatcher(issue_id, user_id) do
+  body = Plug.Conn.Query.encode(%{user_id: user_id}) 
+  HTTPotion.delete!("#{url}/issues/#{issue_id}/watchers/#{user_id}.json", [basic_auth: auth()])
+end
+
+
  def url() do
     Application.get_env(:redelix, :url)
  end
