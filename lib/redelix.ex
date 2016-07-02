@@ -36,32 +36,26 @@ end
    #~ HTTPotion.post("#{url}/issues.json", [body: Plug.Conn.Query.encode(issue), basic_auth: auth()])
  #~ end
 def createIssue(issue) do
- value = %{issue: issue}
- body = Plug.Conn.Query.encode(value) 
- HTTPotion.post!("#{url}/issues.json", [body: body, basic_auth: auth()])
+ HTTPotion.post!("#{url}/issues.json", [body: Plug.Conn.Query.encode(%{issue: issue}) , basic_auth: auth()])
  end
  
 
  def updateIssue(issue_changes) do
-   value=Enum.into(issue_changes, %{})
-   inner = %{issue: value}
-   {ok, content} = Poison.encode(inner)
-   HTTPotion.put("#{url}/issues/#{issue_changes[:id]}.json", [body: content, basic_auth: auth(), headers: ["Content-Type": "application/json"]])
+   {ok, content} = Poison.encode(%{issue: Enum.into(issue_changes, %{})})
+   HTTPotion.put!("#{url}/issues/#{issue_changes[:id]}.json", [body: content, basic_auth: auth(), headers: ["Content-Type": "application/json"]])
 end
 
 
 def deleteIssue(issue_id) do
-  HTTPotion.delete("#{url}/issues/#{issue_id}.json", [basic_auth: auth()] )
+  HTTPotion.delete!("#{url}/issues/#{issue_id}.json", [basic_auth: auth()] )
 end
 
 
 def addWatcher(issue_id, user_id) do
-  body = Plug.Conn.Query.encode(%{user_id: user_id}) 
-  HTTPotion.post!("#{url}/issues/#{issue_id}/watchers.json", [body: body, basic_auth: auth()])
+  HTTPotion.post!("#{url}/issues/#{issue_id}/watchers.json", [body: Plug.Conn.Query.encode(%{user_id: user_id}) , basic_auth: auth()])
 end
 
 def deleteWatcher(issue_id, user_id) do
-  body = Plug.Conn.Query.encode(%{user_id: user_id}) 
   HTTPotion.delete!("#{url}/issues/#{issue_id}/watchers/#{user_id}.json", [basic_auth: auth()])
 end
 
