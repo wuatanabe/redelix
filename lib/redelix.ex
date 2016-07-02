@@ -38,16 +38,16 @@ end
 def createIssue(issue) do
  value = %{issue: issue}
  body = Plug.Conn.Query.encode(value) 
- HTTPotion.post("#{url}/issues.json", [body: body, basic_auth: auth()])
+ HTTPotion.post!("#{url}/issues.json", [body: body, basic_auth: auth()])
  end
  
 
- def updateIssue(issue_id, issue_changes) do
-   #value = %{issue: issue_changes}
-  # value = %{issue: issue_changes}
-   changes = Plug.Conn.Query.encode(issue_changes) 
-   HTTPotion.post("#{url}/issues/#{issue_id}.json", [body: changes, basic_auth: auth()])
- end
+ def updateIssue(issue_changes) do
+   value=Enum.into(issue_changes, %{})
+   inner = %{issue: value}
+   {ok, content} = Poison.encode(inner)
+   HTTPotion.put("#{url}/issues/#{issue_changes[:id]}.json", [body: content, basic_auth: auth(), headers: ["Content-Type": "application/json"]])
+end
 
 
 
