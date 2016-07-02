@@ -50,6 +50,9 @@ def createIssue(issue) do
 end
 
 
+def deleteIssue(issue_id) do
+  HTTPotion.delete("#{url}/issues/#{issue_id}.json", [basic_auth: auth()] )
+end
 
 
  def url() do
