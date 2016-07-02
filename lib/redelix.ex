@@ -2,16 +2,34 @@ defmodule Redelix do
 
  @derive [Poison.Decoder, Poison.Encoder]
   
+  
+def getListOf(subpath_for_resources, resources) do
+    decoded_response=decode_get_response(HTTPotion.get "#{url}/#{resources}.json", [basic_auth: auth()]  ) 
+    return_decoded_response(decoded_response, resources)	
+end
+
+
 def getWiki(project_name, wiki_page_name) do
     decoded_response=decode_get_response(HTTPotion.get "#{url}/projects/#{project_name}/wiki/#{wiki_page_name}.json", [basic_auth: auth()])
     return_decoded_response(decoded_response, "wiki_page")
  end
+
+ def uploadAttachment(attachment) do
+    HTTPotion.post!("#{url}/uploads.json", [body: attachment , basic_auth: auth(), headers: ["Content-Type": "application/octet-stream"]])  
+ end
+
+
+def getWikiVersion(project_name, wiki_page_name, version) do
+    decoded_response=decode_get_response(HTTPotion.get "#{url}/projects/#{project_name}/wiki/#{wiki_page_name}/#{version}.json", [basic_auth: auth()])
+    return_decoded_response(decoded_response, "wiki_page")
+end
   
  def getWikis(project_name) do
     decoded_response=decode_get_response(HTTPotion.get "#{url}/projects/#{project_name}/wiki/index.json", [basic_auth: auth()])
     return_decoded_response(decoded_response, "wiki_pages")
  end
   
+
 def deleteWiki(project_name, wiki_page_name) do
   HTTPotion.delete!("#{url}/projects/#{project_name}/wiki/#{wiki_page_name}.json", [basic_auth: auth()] )
 end
@@ -30,10 +48,35 @@ end
     return_decoded_response(decoded_response, "issue")
 end 
 
-def getIssues() do
-    decoded_response=decode_get_response(HTTPotion.get "#{url}/issues.json", [basic_auth: auth()]  ) 
-    return_decoded_response(decoded_response, "issues")
+def getIssues() do 
+    getListOf("issues", "issues")
 end
+
+def getTrackers() do 
+    getListOf("trackers", "trackers")
+end
+
+def getProjects() do 
+    getListOf("projects", "projects")
+end
+
+def getUsers() do 
+    getListOf("users", "users")
+end
+
+def getRoles() do 
+    getListOf("roles", "roles")
+end
+
+def getGroups() do 
+    getListOf("groups", "groups")
+end
+
+def getVersions() do 
+    getListOf("versions", "versions")
+end
+
+
 
 def getIssues(query_string) do
     decoded_response=decode_get_response(HTTPotion.get "#{url}/issues.json", [basic_auth: auth(), query: query_string]  ) 
