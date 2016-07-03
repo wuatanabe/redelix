@@ -1,6 +1,6 @@
 # Redelix
 
-Simple Elixir Redmine RestAPI client 
+Elixir Redmine RestAPI client 
 
 ## Installation
 
