@@ -2,11 +2,6 @@ defmodule Redelix do
 
  @derive [Poison.Decoder, Poison.Encoder]
   
-  
-def getListOf(subpath_for_resources, resources) do
-    decoded_response=decode_get_response(HTTPotion.get "#{url}/#{resources}.json", [basic_auth: auth()]  ) 
-    return_decoded_response(decoded_response, resources)	
-end
 
 
 def getWiki(project_name, wiki_page_name) do
@@ -44,8 +39,7 @@ def createWiki(project_name, wiki_page_name, wiki_changes) do
 end
   
  def getIssue(issue_id) do
-    decoded_response=decode_get_response(HTTPotion.get "#{url}/issues/#{issue_id}.json", [basic_auth: auth()])
-    return_decoded_response(decoded_response, "issue")
+    getElementById("issues", "issue", issue_id) 
 end 
 
 def getIssues() do 
@@ -56,27 +50,127 @@ def getTrackers() do
     getListOf("trackers", "trackers")
 end
 
+def deleteTracker(tracker_id) do
+  deleteElementById("trackers", "trackers", tracker_id) 
+end
+
 def getProjects() do 
     getListOf("projects", "projects")
 end
+  
+ def getProject(project_id) do
+    getElementById("projects", "projects", project_id) 
+end 
+
+def createProject(project) do
+ HTTPotion.post!("#{url}/projects.json", [body: Plug.Conn.Query.encode(%{project: project}) , basic_auth: auth()])
+end
+
+def deleteProject(project_id) do
+  deleteElementById("projects", "projects", project_id) 
+end
+
 
 def getUsers() do 
     getListOf("users", "users")
+end
+
+ def getUser(user_id) do
+    getElementById("users", "user", user_id) 
+end
+
+def createUser(user) do
+ HTTPotion.post!("#{url}/users.json", [body: Plug.Conn.Query.encode(%{user: user}) , basic_auth: auth()])
+end
+
+def deleteUser(user_id) do
+  deleteElementById("users", "users", user_id) 
+end
+
+def getQueries() do
+  getListOf("queries", "queries")
+end
+
+def getQuery(query_id) do
+    getElementById("queries", "queries", query_id) 
+end
+
+def deleteQuery(query_id) do
+  deleteElementById("queries", "queries", query_id) 
 end
 
 def getRoles() do 
     getListOf("roles", "roles")
 end
 
+ def getRole(role_id) do
+    getElementById("roles", "role", role_id) 
+end
+
+def deleteRole(role_id) do
+  deleteElementById("roles", "roles", role_id) 
+end
+
 def getGroups() do 
     getListOf("groups", "groups")
+end
+
+ def getGroup(group_id) do
+    getElementById("groups", "group", group_id) 
+end
+
+def deleteGroup(group_id) do
+  deleteElementById("groups", "groups", group_id) 
 end
 
 def getVersions() do 
     getListOf("versions", "versions")
 end
 
+def getVersion(version_id) do 
+    getElementById("versions", "version", version_id)
+end
 
+def getNews() do
+   getListOf("news", "news")
+end
+
+
+def getCustomFields() do
+   getListOf("custom_fields", "custom_fields")
+end
+
+def getCustomField(custom_field_id) do
+   getElementById("custom_fields", "custom_fields", custom_field_id)
+end
+
+def getTimeEntries() do
+   getListOf("time_entries", "time_entries")
+end
+
+def getEnumerations(enumeration_id) do
+   getElementById("enumerations", "enumerations", enumeration_id)
+end
+
+def getEnumerations() do
+   getListOf("enumerations", "enumerations")
+end
+
+def getCategories() do
+   getListOf("categories", "categories")
+end
+
+def getCategory(category_id) do
+   getElementById("category", "categories", category_id)
+end
+
+def getStatuses() do
+   getListOf("statuses", "statuses")
+end
+
+def getStatus(status_id) do
+   getElementById("statuses", "statuses", status_id)
+end
 
 def getIssues(query_string) do
     decoded_response=decode_get_response(HTTPotion.get "#{url}/issues.json", [basic_auth: auth(), query: query_string]  ) 
@@ -101,7 +195,26 @@ end
 
 
 def deleteIssue(issue_id) do
-  HTTPotion.delete!("#{url}/issues/#{issue_id}.json", [basic_auth: auth()] )
+  #HTTPotion.delete!("#{url}/issues/#{issue_id}.json", [basic_auth: auth()] )
+  deleteElementById("issues", "issues", issue_id) 
+end
+
+def getIssueRelations(issue_id) do
+    decoded_response=decode_get_response(HTTPotion.get "#{url}/issues/#{issue_id}/relations.json", [basic_auth: auth()])
+    return_decoded_response(decoded_response, "relations")
+end
+
+def getIssueRelation(relation_id) do
+   getElementById("relations", "relations", relation_id)
+end
+
+def createIssueRelation(issue_id, issue_relation) do
+  HTTPotion.post!("#{url}/issues/#{issue_id}/relations.json", [body: Plug.Conn.Query.encode(%{relation: issue_relation}) , basic_auth: auth()])
+end
+
+def deleteIssueRelation(relation_id) do
+  #HTTPotion.delete!("#{url}/relations/#{relation_id}.json", [basic_auth: auth()] )
+  deleteElementById("relations", "relations", relation_id) 
 end
 
 
@@ -114,6 +227,11 @@ def deleteWatcher(issue_id, user_id) do
 end
 
 
+def getAttachment(attachment_id) do
+    decoded_response=decode_get_response(HTTPotion.get "#{url}/attachments/#{attachment_id}.json", [basic_auth: auth()])
+    return_decoded_response(decoded_response, "attachments")
+end
+
  def url() do
     Application.get_env(:redelix, :url)
  end
@@ -121,6 +239,21 @@ end
  def auth() do
     {Application.get_env(:redelix, :username) , Application.get_env(:redelix, :password) }
  end
+
+defp getElementById(subpath_for_resource, resource, resource_id) do
+    decoded_response=decode_get_response(HTTPotion.get "#{url}/#{subpath_for_resource}/#{resource_id}.json", [basic_auth: auth()])
+    return_decoded_response(decoded_response, resource)
+end
+
+defp getListOf(subpath_for_resources, resources) do
+    decoded_response=decode_get_response(HTTPotion.get "#{url}/#{resources}.json", [basic_auth: auth()]  ) 
+    return_decoded_response(decoded_response, resources)	
+end
+
+defp deleteElementById(subpath_for_resource, resource, resource_id) do
+  HTTPotion.delete!("#{url}/#{subpath_for_resource}/#{resource_id}.json", [basic_auth: auth()] )
+end
+
 
 defp return_decoded_response(decoded_response, key) do
     case  decoded_response do
