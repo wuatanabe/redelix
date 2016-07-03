@@ -70,6 +70,27 @@ def deleteProject(project_id) do
   deleteElementById("projects", "projects", project_id) 
 end
 
+def getMembershipsByProjectId(project_id) do
+    decoded_response=decode_get_response(HTTPotion.get "#{url}/projects/#{project_id}/memberships.json", [basic_auth: auth()])
+    return_decoded_response(decoded_response, "memberships")
+end
+
+def getMembershipsByProjectIdentifier(project_identifier) do
+ getMembershipsByProjectId(project_identifier)
+end
+
+def getMembership(membership_id) do
+  getElementById("memberships", "memberships", membership_id) 
+end
+
+def createMembership(project_id, membership) do
+ HTTPotion.post!("#{url}/projects/#{project_id}/memberships.json", [body: Plug.Conn.Query.encode(%{membership: membership}) , basic_auth: auth()])
+end
+
+def deleteProjectMembership(membership_id) do
+  deleteElementById("memberships", "memberships", membership_id) 
+end
+	
 
 def getUsers() do 
     getListOf("users", "users")
