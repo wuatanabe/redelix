@@ -3,13 +3,16 @@ defmodule Redelix.Mixfile do
 
   def project do
     [app: :redelix,
-     version: "0.0.3",
+     version: "0.0.4",
      elixir: "~> 1.3-rc",
      author: "Paolo Freuli",
      email: "paolo.freuli@gmail.com",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
-     deps: deps]
+     deps: deps,
+     description: description(),
+     package: package()
+     ]
   end
 
   # Configuration for the OTP application
@@ -31,4 +34,20 @@ defmodule Redelix.Mixfile do
   defp deps do
     [{:httpotion, "~> 3.0.0"}, {:poison, "~> 2.0"},{:cowboy, "~> 1.0.0"}, {:plug, "~> 1.0"}]
   end
+
+  defp description do
+    """
+    Redmine REST API client library
+    """
+  end
+
+  defp package do
+    [# These are the default files included in the package
+     name: :redelix,
+     files: ["lib", "config", "mix.exs", "README*", "MIT_LICENSE*"],
+     maintainers: ["Paolo Freuli"],
+     licenses: ["MIT License"],
+     links: %{"GitHub" => "https://github.com/wuatanabe/redelix"}]
+  end
+  
 end
