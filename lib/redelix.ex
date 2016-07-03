@@ -201,9 +201,6 @@ end
 
  #CREDIT: thanks to Dogbert (http://stackoverflow.com/users/320615/dogbert)
  #http://stackoverflow.com/questions/38037325/elixir-how-to-post-on-a-rest-api-redmine-with-httpotion
- #~ def createIssue(issue) do
-   #~ HTTPotion.post("#{url}/issues.json", [body: Plug.Conn.Query.encode(issue), basic_auth: auth()])
- #~ end
 def createIssue(issue) do
  HTTPotion.post!("#{url}/issues.json", [body: Plug.Conn.Query.encode(%{issue: issue}) , basic_auth: auth()])
  end
@@ -216,7 +213,6 @@ end
 
 
 def deleteIssue(issue_id) do
-  #HTTPotion.delete!("#{url}/issues/#{issue_id}.json", [basic_auth: auth()] )
   deleteElementById("issues", "issues", issue_id) 
 end
 
@@ -234,7 +230,6 @@ def createIssueRelation(issue_id, issue_relation) do
 end
 
 def deleteIssueRelation(relation_id) do
-  #HTTPotion.delete!("#{url}/relations/#{relation_id}.json", [basic_auth: auth()] )
   deleteElementById("relations", "relations", relation_id) 
 end
 
