@@ -5,7 +5,8 @@ defmodule Redelix.Mixfile do
     [app: :redelix,
      version: "0.0.3",
      elixir: "~> 1.3-rc",
-	
+     author: "Paolo Freuli",
+     email: "paolo.freuli@gmail.com",
      build_embedded: Mix.env == :prod,
      start_permanent: Mix.env == :prod,
      deps: deps]
